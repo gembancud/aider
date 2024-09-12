@@ -610,6 +610,11 @@ def get_parser(default_config_files, git_root):
         default=True,
         help="Enable/disable suggesting shell commands (default: True)",
     )
+    group.add_argument(
+        "--ask",
+        metavar="MODEL_NAME",
+        help="Specify a custom model to use for the /ask command",
+    )
 
     return parser
 

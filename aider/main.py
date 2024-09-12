@@ -73,9 +73,13 @@ def setup_git(git_root, io):
     if git_root:
         repo = git.Repo(git_root)
     elif Path.cwd() == Path.home():
-        io.tool_warning("You should probably run aider in a directory, not your home dir.")
+        io.tool_warning(
+            "You should probably run aider in a directory, not your home dir."
+        )
         return
-    elif io.confirm_ask("No git repo found, create one to track aider's changes (recommended)?"):
+    elif io.confirm_ask(
+        "No git repo found, create one to track aider's changes (recommended)?"
+    ):
         git_root = str(Path.cwd().resolve())
         repo = make_new_repo(git_root, io)
 
@@ -103,7 +107,9 @@ def setup_git(git_root, io):
             io.tool_warning('Update git name with: git config user.name "Your Name"')
         if not user_email:
             git_config.set_value("user", "email", "you@example.com")
-            io.tool_warning('Update git email with: git config user.email "you@example.com"')
+            io.tool_warning(
+                'Update git email with: git config user.email "you@example.com"'
+            )
 
     return repo.working_tree_dir
 
@@ -286,7 +292,9 @@ def register_litellm_models(git_root, model_metadata_fname, io, verbose=False):
     )
 
     try:
-        model_metadata_files_loaded = models.register_litellm_models(model_metatdata_files)
+        model_metadata_files_loaded = models.register_litellm_models(
+            model_metatdata_files
+        )
         if len(model_metadata_files_loaded) > 0 and verbose:
             io.tool_output("Loaded model metadata from:")
             for model_metadata_file in model_metadata_files_loaded:
@@ -318,7 +326,9 @@ def sanity_check_repo(repo, io):
 
     if bad_ver:
         io.tool_error("Aider only works with git repos with version number 1 or 2.")
-        io.tool_output("You may be able to convert your repo: git update-index --index-version=2")
+        io.tool_output(
+            "You may be able to convert your repo: git update-index --index-version=2"
+        )
         io.tool_output("Or run aider --no-git to proceed without using git.")
         io.tool_output("https://github.com/paul-gauthier/aider/issues/211")
         return False
@@ -514,7 +524,9 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         os.environ["OPENAI_ORGANIZATION"] = args.openai_organization_id
 
     register_models(git_root, args.model_settings_file, io, verbose=args.verbose)
-    register_litellm_models(git_root, args.model_metadata_file, io, verbose=args.verbose)
+    register_litellm_models(
+        git_root, args.model_metadata_file, io, verbose=args.verbose
+    )
 
     if not args.model:
         args.model = "gpt-4o-2024-08-06"
@@ -565,7 +577,12 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         return 1
 
     commands = Commands(
-        io, None, verify_ssl=args.verify_ssl, args=args, parser=parser, verbose=args.verbose
+        io,
+        None,
+        verify_ssl=args.verify_ssl,
+        args=args,
+        parser=parser,
+        verbose=args.verbose,
     )
 
     summarizer = ChatSummary(
@@ -612,6 +629,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
             num_cache_warming_pings=args.cache_keepalive_pings,
             suggest_shell_commands=args.suggest_shell_commands,
             chat_language=args.chat_language,
+            ask_model=args.ask,
         )
     except ValueError as err:
         io.tool_error(str(err))
@@ -668,7 +686,9 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         args.pretty = False
         io.tool_output("VSCode terminal detected, pretty output has been disabled.")
 
-    io.tool_output('Use /help <question> for help, run "aider --help" to see cmd line args')
+    io.tool_output(
+        'Use /help <question> for help, run "aider --help" to see cmd line args'
+    )
 
     if git_root and Path.cwd().resolve() != Path(git_root).resolve():
         io.tool_warning(
@@ -750,7 +770,9 @@ def check_and_load_imports(io, verbose=False):
                 load_slow_imports(swallow=False)
             except Exception as err:
                 io.tool_error(str(err))
-                io.tool_output("Error loading required imports. Did you install aider properly?")
+                io.tool_output(
+                    "Error loading required imports. Did you install aider properly?"
+                )
                 io.tool_output("https://aider.chat/docs/install/install.html")
                 sys.exit(1)
 
